@@ -37,9 +37,8 @@ public:
 	//friend class WiFiStringServer;
 	String partialMessage;
 	bool ffReceived;
-	char z;
-protected:
 	WiFiClient* iClient;
+protected:
 private:
 	static const unsigned char lineEnding;
 };

@@ -13,7 +13,6 @@ WiFiStringClient::WiFiStringClient(uint8_t sock) {
 	iClient = new WiFiClient(sock);
 	partialMessage = String("");
 	ffReceived = false;
-	z = -1;
 }
 
 
@@ -21,7 +20,6 @@ WiFiStringClient::WiFiStringClient(WiFiClient& aClient, uint8_t sock) {
 	iClient = &aClient;
 	partialMessage = String("");
 	ffReceived = false;
-	z = -1;
 }
 
 
@@ -45,6 +43,7 @@ int WiFiStringClient::available() {
 	while(iClient->available() > 0){
 		if( iClient->peek() == WiFiStringClient::lineEnding ){
 			ffReceived = true;
+			(char) iClient->read();
 			return partialMessage.length();
 		}
 
@@ -53,36 +52,10 @@ int WiFiStringClient::available() {
 
 	return 0;
 
-//	while( iClient->available() > 0){
-//		partialMessage += String((char) iClient->read());
-//	}
-//
-//	return partialMessage.length();
-
-/*
-	int available = iClient->available();
-	if( available > 0 ){//|| partialMessage.length() > 0){
-		//partialMessage = String((char) WiFiClient::read());
-		unsigned char buf[10];
-		memset(buf, 0, sizeof(buf));
-		z = WiFiClient::read(buf, sizeof(buf)-1);
-		for( int i=0; i<sizeof(buf) && i<available ; i++){
-			if(buf[i] == '\0')
-				break;
-//			char s[32];
-//			itoa((int)buf[i], s, 10);
-			partialMessage += buf[i];
-			partialMessage += ',';
-		}
-	}
-
-	return partialMessage.length();
-	//return WiFiClient::available();
-*/
 }
 
 String WiFiStringClient::readString() {
-	if( available() > 0){
+	if( available() > 0 ){
 		ffReceived = false;
 		String msg = partialMessage;
 		partialMessage = String("");
